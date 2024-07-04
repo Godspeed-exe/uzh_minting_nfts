@@ -1,33 +1,16 @@
 from dotenv import load_dotenv
-import mysql.connector
 import random
 import os
+import json
 
 
+with open('all_assets.json') as f:
+    loaded_assets = json.load(f)
+    print(loaded_assets)
 
-def connect_to_db():
-    global mydb 
-    mydb = mysql.connector.connect(
-        host=mysql_host,
-        user=mysql_user,
-        password=mysql_password,
-        database=mysql_database,
-        auth_plugin="mysql_native_password"
-    )
+number_of_assets = 5
 
-
-
-load_dotenv()
-mysql_host = os.getenv('mysql_host')
-mysql_user = os.getenv('mysql_user')
-mysql_password = os.getenv('mysql_password')
-mysql_database = os.getenv('mysql_database')
-
-connect_to_db()
-mycursor = mydb.cursor(dictionary=True)
-types = ["artist", "astrologer", "blacksmith", "citizen", "herbalist", "hunter", "jeweler"]
-
-number_of_assets = 100
+all_assets = []
 
 for i in range (1, number_of_assets+1):
 
@@ -35,10 +18,16 @@ for i in range (1, number_of_assets+1):
     speed = random.randint(1,50)
     defense = random.randint(1,80)
     health = random.randint(1,100)
-    this_type = random.choice(types)
+    type = random.choice(loaded_assets)
 
-    sql = "INSERT INTO assets (type, attack, speed, defense, health) VALUES (%s, %s, %s, %s, %s)"
-    values = (this_type, attack, speed, defense, health)
-    mycursor.execute(sql, values)
-    mydb.commit()
-    print(f"Inserted asset with ID {i}")
+
+    this_type = type['type']
+    type_image = type['ipfs']
+
+    new_asset = {"id": i, "type": this_type, "attack": attack, "speed": speed, "defense": defense, "health": health, "ipfs": type_image}
+
+    all_assets.append(new_asset)
+
+
+with open('assets.json', 'w') as f:
+    json.dump(all_assets, f)

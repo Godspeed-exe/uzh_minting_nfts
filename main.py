@@ -7,7 +7,7 @@ from os.path import exists
 from PIL import Image
 import requests
 import time
-
+import json
 
 
 ########################################################
@@ -15,39 +15,16 @@ import time
 ########################################################
 load_dotenv()
 network = os.getenv('network')
-mysql_host = os.getenv('mysql_host')
-mysql_user = os.getenv('mysql_user')
-mysql_password = os.getenv('mysql_password')
-mysql_database = os.getenv('mysql_database')
 wallet_mnemonic = os.getenv('wallet_mnemonic')
-blockfrost_apikey = os.getenv('blockfrost_apikey')
-blockfrost_ipfs = os.getenv('blockfrost_ipfs')
-policy_lock_slot  = int(os.getenv('policy_lock_slot'))
-
-custom_header = {"project_id": blockfrost_ipfs}
-
-def connect_to_db():
-    global mydb 
-    mydb = mysql.connector.connect(
-        host=mysql_host,
-        user=mysql_user,
-        password=mysql_password,
-        database=mysql_database,
-        auth_plugin="mysql_native_password"
-    )
-
-########################################################
-#######           Setup DB Connection            #######
-########################################################
-connect_to_db()
-mycursor = mydb.cursor(dictionary=True)
-
 
 ########################################################
 #######           Define Network                 #######
 ########################################################
 if network=="testnet":
     base_url = ApiUrls.preprod.value
+    cardano_network = Network.TESTNET
+elif network=="uzh":
+    base_url = "http://..."
     cardano_network = Network.TESTNET
 else:
     base_url = ApiUrls.mainnet.value
@@ -56,8 +33,8 @@ else:
 ########################################################
 #######           Initiate Blockfrost API        #######
 ########################################################
-api = BlockFrostApi(project_id=blockfrost_apikey, base_url=base_url)        
-cardano = BlockFrostChainContext(project_id=blockfrost_apikey, base_url=base_url)
+api = BlockFrostApi(base_url=base_url)        
+cardano = BlockFrostChainContext(base_url=base_url)
 
 ########################################################
 #######           Initiate wallet                #######
@@ -71,7 +48,7 @@ staking_skey = ExtendedSigningKey.from_hdwallet(staking_key)
 
 main_address=Address(payment_part=payment_skey.to_verification_key().hash(), staking_part=staking_skey.to_verification_key().hash(),network=cardano_network)
 
-print(main_address)
+print(f"Your main minting address: {main_address}")
 
 
 ########################################################
@@ -93,8 +70,8 @@ policy_signing_key = PaymentSigningKey.load(f"keys/policy.skey")
 policy_verification_key = PaymentVerificationKey.load(f"keys/policy.vkey")
 pub_key_policy = ScriptPubkey(policy_verification_key.hash())
 
-must_before_slot = InvalidHereAfter(policy_lock_slot)
-policy = ScriptAll([pub_key_policy, must_before_slot])
+
+policy = ScriptAll([pub_key_policy])
 
 policy_id = policy.hash()
 policy_id_hex = policy_id.payload.hex()
@@ -102,11 +79,17 @@ native_scripts = [policy]
 
 
 ########################################################
-#######           Get assets from DB              #######
+#######         Get assets from JSON file        #######
 ########################################################
-query = "select * from assets where status = 0 limit 5"
-mycursor.execute(query)
-assets = mycursor.fetchall()
+
+if os.path.isfile('assets.json') == False:
+    print("Please run 'generate_assets.py' first.")
+    exit()
+
+
+with open('assets.json') as f:
+    assets = json.load(f)
+    print(assets)
 
 base_name = "CHARACTER"
 
@@ -118,7 +101,7 @@ while len(assets) > 0:
     #######           Initiate TxBuilder             #######
     ########################################################
     builder = TransactionBuilder(cardano)
-    builder.ttl = policy_lock_slot
+
 
 
     ########################################################
@@ -148,6 +131,7 @@ while len(assets) > 0:
         asset_speed = asset['speed']
         asset_defense = asset['defense']
         asset_health = asset['health']
+        asset_ipfs = asset['ipfs']
 
         asset_name = f"{base_name}{asset_id:04d}"
         asset_name_bytes = asset_name.encode("utf-8")
@@ -156,18 +140,11 @@ while len(assets) > 0:
         mime = "image/png"
 
         ########################################################
-        #######           Upload file to IPFS            #######
-        ########################################################
-        with open(file_name, 'rb') as f:
-            res = requests.post("https://ipfs.blockfrost.io/api/v0/ipfs/add", headers= custom_header, files={file_name: f})
-            hashed_char = res.json()['ipfs_hash']
-
-        ########################################################
         #######           Fill metadata for asset        #######
         ########################################################
         metadata[721][policy_id_hex][asset_name] = {
                                 "name": asset_name,
-                                "image": f"ipfs://{hashed_char}",
+                                "image": f"ipfs://{asset_ipfs}",
                                 "mediaType": mime,
                                 "type": asset_type,
                                 "attack": asset_attack,
@@ -214,15 +191,6 @@ while len(assets) > 0:
         cardano.submit_tx(signed_tx.to_cbor())
         print(f"Submitted TX ID: {txid}")
 
-        ########################################################
-        #######       Update created assets              #######
-        ########################################################
-        for asset in assets:
-            asset_id = asset["id"]
-            sql = f"UPDATE assets set status=1 where id = {asset_id}"
-            mycursor.execute(sql)
-            mydb.commit()
-            print(f"updated status for asset {asset_id}")
 
     ########################################################
     #######       Some error handling                #######
@@ -240,9 +208,6 @@ while len(assets) > 0:
     #######       Get next batch of NFT's            #######
     ########################################################
     time.sleep(10)
-    query = "select * from assets where status = 0 limit 5"
-    mycursor.execute(query)
-    assets = mycursor.fetchall()
 
 ########################################################
 #######       ALL DONE!                          #######
