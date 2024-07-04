@@ -21,6 +21,11 @@ For this example we'll be minting 5 NFT's. We'll:
 
 ## Requirements
 
+Keep in mind we'll be using 2 wallets!
+1. your Nami wallet to visualize the assets
+2. a (minting engine) wallet which will be used by the script
+
+- The UZH Nami wallet - link to internal repo here
 - A Cardano mnemonic - this can be any 24 word mnemonic generated from Nami or other sources like https://iancoleman.io/bip39/ -> set dropdown to 24 -> copy BIP38 mnemonic. [ONLY DO THIS IN DEV]
 
 ## Install dependencies
@@ -44,7 +49,8 @@ Check if installed correctly (from terminal):
     git version
 
 Python + pip
-    sudo apt install python3 python3-pip
+
+    sudo apt install -y python3 python3-pip
 
 
 
@@ -72,6 +78,7 @@ cp .env-example .env
 Update .env - only wallet_mnemonic
 ```bash
 wallet_mnemonic='your_wallet_mnemonic_here'
+your_wallet_address='the_address_of_your_nami_wallet'
 ```
 
 Generate some random assets based on the content of [all_assets.json](all_assets.json)
