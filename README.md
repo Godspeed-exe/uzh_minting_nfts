@@ -59,6 +59,11 @@ Move into the folder
 ```bash
 cd uzh_minting_nfts
 ```
+Install Python libraries (pyCardano & blockfrost & load_dotenv)
+```bash
+pip3 install -r requirements.txt
+```
+
 Copy .env-example to .env
 ```bash
 cp .env-example .env
@@ -92,7 +97,13 @@ python3 main.py
 pip3 install pycardano
 ```
 
+- Unfulfilled amount:
+ {'coin': 1659643, 'multi_asset': {}}
+```bash
+This indicates your wallet does not have any ADA available for building the transaction. Make sure you send ADA (ex: 10 ADA) to the address generated in your terminal.
 
+example: Your main minting address: addr_test1q......
+```
 ## NFT details
 Our NFT's will have the following attributes: 
 - type
