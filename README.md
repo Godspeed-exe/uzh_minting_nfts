@@ -15,7 +15,7 @@ This repo contains an example of minting NFT's on Cardano with PyCardano. In thi
 
 For this example we'll be minting 5 NFT's. We'll:
 1. generate and store the collection in a JSON file (assets.json) - generate_assets.py
-2. loop over the JSON file and create NFT's - main.py
+2. loop over the JSON file and create NFT's - mint_assets.py
 
 
 
@@ -112,7 +112,7 @@ python3 generate_assets.py
 ```
 Mint the assets to your wallet
 ```bash
-python3 main.py
+python3 mint_assets.py
 ```
 
 ## Possible errors
