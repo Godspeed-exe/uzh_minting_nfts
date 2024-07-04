@@ -95,7 +95,7 @@ pip3 install -r requirements.txt
 
 Copy .env-example to .env
 ```bash
-cp .env-example .env
+cp .env_example .env
 ```
 
 Update .env - only wallet_mnemonic
