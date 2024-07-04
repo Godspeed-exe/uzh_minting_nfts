@@ -8,12 +8,14 @@ import time
 import json
 
 
+
 ########################################################
 #######           Loading ENV                    #######
 ########################################################
 load_dotenv()
 network = os.getenv('network')
 wallet_mnemonic = os.getenv('wallet_mnemonic')
+your_wallet_address = os.getenv('your_wallet_address')
 
 ########################################################
 #######           Define Network                 #######
@@ -120,6 +122,8 @@ while len(assets) > 0:
     #######           Loop over assets               #######
     ########################################################
 
+    asset_minted = []
+
     for asset in assets:
 
         
@@ -154,6 +158,8 @@ while len(assets) > 0:
         nft1 = AssetName(asset_name_bytes)
         my_asset[nft1] = 1
 
+        asset_minted.append(asset)
+
     ########################################################
     #######           Add minting asset to TxBiulder #######
     ########################################################
@@ -170,13 +176,13 @@ while len(assets) > 0:
     #######         Estimate min-ADA required        #######
     ########################################################
     min_val = min_lovelace(
-        cardano, output=TransactionOutput(main_address, Value(0, my_nft))
+        cardano, output=TransactionOutput(your_wallet_address, Value(0, my_nft))
     )
 
     ########################################################
     #######         Add inputs & outputs             #######
     ########################################################
-    builder.add_output(TransactionOutput(main_address, Value(min_val, my_nft)))
+    builder.add_output(TransactionOutput(your_wallet_address, Value(min_val, my_nft)))
     builder.add_input_address(main_address)
     
     try: 
@@ -189,6 +195,8 @@ while len(assets) > 0:
         cardano.submit_tx(signed_tx.to_cbor())
         print(f"Submitted TX ID: {txid}")
 
+        for asset in asset_minted:
+            assets.remove(asset)
 
     ########################################################
     #######       Some error handling                #######
@@ -199,13 +207,9 @@ while len(assets) > 0:
         else:
             print("Transaction failed, sleeping 10")
             print(str(e))
+        print("If this keeps happening, call for support!")
         time.sleep(10)  
 
-
-    ########################################################
-    #######       Get next batch of NFT's            #######
-    ########################################################
-    time.sleep(10)
 
 ########################################################
 #######       ALL DONE!                          #######
