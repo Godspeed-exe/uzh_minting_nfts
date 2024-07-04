@@ -1,6 +1,7 @@
 ## About The Repo
 
 This repo contains an example of minting NFT's on Cardano with PyCardano. In this example we'll also use the flexibility of Cardano's metadata to add extra attributes to our NFT's. The goal could be to create game characters like below.
+<p float="left">
 
 <img src="assets/artist.png" alt="Artist" width="100"/>
 <img src="assets/astrologer.png" alt="Artist" width="100"/>
@@ -9,7 +10,7 @@ This repo contains an example of minting NFT's on Cardano with PyCardano. In thi
 <img src="assets/herbalist.png" alt="Artist" width="100"/>
 <img src="assets/hunter.png" alt="Artist" width="100"/>
 <img src="assets/jeweler.png" alt="Artist" width="100"/>
-
+</p>
 
 
 For this example we'll be minting 5 NFT's. We'll:
