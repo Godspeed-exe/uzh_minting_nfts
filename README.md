@@ -25,6 +25,8 @@ Keep in mind we'll be using 2 wallets!
 1. your Nami wallet to visualize the assets
 2. a (minting engine) wallet which will be used by the script
 
+**You can also just use 1 recovery phrase for both wallets, simply re-use the same mnemonic in Nami and in the .env file**
+
 - The UZH Nami wallet - link to internal repo here
 - A Cardano mnemonic - this can be any 24 word mnemonic generated from Nami or other sources like https://iancoleman.io/bip39/ -> set dropdown to 24 -> copy BIP39 mnemonic. [ONLY DO THIS IN DEV]
 
