@@ -3,4 +3,3 @@ keys/*
 !keys/.gitkeep 
 assets.json
 upload_to_ipfs.py
-requirements.txt

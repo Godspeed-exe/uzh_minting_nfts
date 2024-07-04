@@ -21,7 +21,32 @@ For this example we'll be minting 5 NFT's. We'll:
 
 ## Requirements
 
-- A Cardano mnemonic - this can be any 24 word mnemonic
+- A Cardano mnemonic - this can be any 24 word mnemonic generated from Nami or other sources like https://iancoleman.io/bip39/ -> set dropdown to 24 -> copy BIP38 mnemonic. [ONLY DO THIS IN DEV]
+
+## Install dependencies
+
+Git - package to interact with Github and other source control platforms
+
+- Unix 
+```bash
+sudo apt install -y git
+```
+- Windows / Mac
+
+With Mac you can use Brew if you are familiar with this. If not, go for the download + install. 
+```bash
+https://git-scm.com/downloads
+```
+
+Check if installed correctly (from terminal):
+
+    git --version
+    git version
+
+Python + pip
+    sudo apt install python3 python3-pip
+
+
 
 ## How to Run?
 
@@ -46,11 +71,11 @@ wallet_mnemonic='your_wallet_mnemonic_here'
 
 Generate some random assets based on the content of [all_assets.json](all_assets.json)
 ```bash
-python generate_assets.py
+python3 generate_assets.py
 ```
 Mint the assets to your wallet
 ```bash
-python main.py
+python3 main.py
 ```
 
 ## Possible errors
@@ -62,14 +87,11 @@ python main.py
 3. Restart your terminal to reload PATH variable
 ```
 
-- PyCardano not installed
+- PyCardano / Blockfrost not installed
 ```bash
-pip install pycardano
+pip3 install pycardano
 ```
-- Blockfrost not installed
-```bash
-pip install blockfrost-python
-```
+
 
 ## NFT details
 Our NFT's will have the following attributes: 

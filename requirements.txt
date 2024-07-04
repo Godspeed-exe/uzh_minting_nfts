@@ -1,0 +1,3 @@
+python-dotenv==0.21.1
+blockfrost-python==0.5.3
+pycardano==0.10.0
