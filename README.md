@@ -26,7 +26,7 @@ Keep in mind we'll be using 2 wallets!
 2. a (minting engine) wallet which will be used by the script
 
 - The UZH Nami wallet - link to internal repo here
-- A Cardano mnemonic - this can be any 24 word mnemonic generated from Nami or other sources like https://iancoleman.io/bip39/ -> set dropdown to 24 -> copy BIP38 mnemonic. [ONLY DO THIS IN DEV]
+- A Cardano mnemonic - this can be any 24 word mnemonic generated from Nami or other sources like https://iancoleman.io/bip39/ -> set dropdown to 24 -> copy BIP39 mnemonic. [ONLY DO THIS IN DEV]
 
 ## Install dependencies
 
