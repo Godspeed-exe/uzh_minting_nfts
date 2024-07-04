@@ -1,10 +1,8 @@
 from dotenv import load_dotenv
-import mysql.connector
 from pycardano import *
 from blockfrost import BlockFrostApi, ApiError, ApiUrls,BlockFrostIPFS
 import os
 from os.path import exists
-from PIL import Image
 import requests
 import time
 import json
