@@ -30,27 +30,50 @@ Keep in mind we'll be using 2 wallets!
 
 ## Install dependencies
 
+
+### Unix 
 Git - package to interact with Github and other source control platforms
 
-- Unix 
+
 ```bash
 sudo apt install -y git
 ```
-- Windows / Mac
+
+Python + pip - Programming language & package manager
+
+    sudo apt install -y python3 python3-pip
+
+### Windows / Mac
+
+Git 
 
 With Mac you can use Brew if you are familiar with this. If not, go for the download + install. 
+
+
 ```bash
 https://git-scm.com/downloads
 ```
+or
+```bash
+brew install git
+```
 
-Check if installed correctly (from terminal):
+Python
+
+```
+https://www.python.org/downloads/
+```
+or
+```bash
+brew install python3
+```
+
+### Check if installed correctly (from terminal / CLI):
 
     git --version
     git version
 
-Python + pip
 
-    sudo apt install -y python3 python3-pip
 
 
 
