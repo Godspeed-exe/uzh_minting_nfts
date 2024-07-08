@@ -20,21 +20,22 @@ your_wallet_address = os.getenv('your_wallet_address')
 ########################################################
 #######           Define Network                 #######
 ########################################################
-if network=="testnet":
-    base_url = ApiUrls.preprod.value
+
+if network=="uzh":
+    base_url = "http://130.60.144.75:3000"
     cardano_network = Network.TESTNET
-elif network=="uzh":
-    base_url = "http://..."
-    cardano_network = Network.TESTNET
-else:
-    base_url = ApiUrls.mainnet.value
-    cardano_network = Network.MAINNET
+
+# print(base_url)
 
 ########################################################
 #######           Initiate Blockfrost API        #######
 ########################################################
-api = BlockFrostApi(base_url=base_url)        
-cardano = BlockFrostChainContext(base_url=base_url)
+
+api = BlockFrostApi(project_id="testing", base_url=base_url)        
+cardano = BlockFrostChainContext(project_id="testing", base_url=base_url)
+
+# cardano.url = base_url
+
 
 ########################################################
 #######           Initiate wallet                #######
@@ -49,6 +50,18 @@ staking_skey = ExtendedSigningKey.from_hdwallet(staking_key)
 main_address=Address(payment_part=payment_skey.to_verification_key().hash(), staking_part=staking_skey.to_verification_key().hash(),network=cardano_network)
 
 print(f"Your main minting address: {main_address}")
+
+try:
+    address_balance = api.address(address=main_address)
+except Exception as e:
+    if e.status_code == 404:
+        print("Your wallet is empty, please fund it with ADA")
+        exit(1)
+
+    print(str(e))
+
+
+
 
 
 ########################################################
@@ -192,7 +205,9 @@ while len(assets) > 0:
         ########################################################
         signed_tx = builder.build_and_sign([payment_skey, policy_signing_key],change_address=main_address)
         txid = str(signed_tx.id)        
-        cardano.submit_tx(signed_tx.to_cbor())
+        headers = {'Content-Type': 'application/cbor'}
+        response = requests.post("http://cardano20.ifi.uzh.ch:8090/api/submit/tx", data=signed_tx.to_cbor(), headers=headers)
+        
         print(f"Submitted TX ID: {txid}")
 
         for asset in asset_minted:
