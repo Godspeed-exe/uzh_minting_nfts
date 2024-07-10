@@ -22,7 +22,7 @@ your_wallet_address = os.getenv('your_wallet_address')
 ########################################################
 
 if network=="uzh":
-    base_url = "http://130.60.144.75:3000"
+    base_url = "http://cardano20.ifi.uzh.ch"
     cardano_network = Network.TESTNET
 
 # print(base_url)
